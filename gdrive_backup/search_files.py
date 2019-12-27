@@ -1,17 +1,22 @@
 import os
-BACKUP_FOLDER = r'D:\\Backup'
+LAP_BACKUP_FOLDER = r'D:\\Backup'
+PC_BACKUP_FOLDER = r'C:\Users\Kumar\Downloads'
+FILE_TYPES = [
+    'xls', 'xlsx', 'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'ppt', 'pptx', 'zip', 'gz', 'rar'
+]
 
 
 class SearchFiles:
 
-    def __init__(self, folder_path: str):
+    def __init__(self, folder_path: str, file_types: list):
         """Search Folder Path is initiated here"""
         self.folder_path = folder_path
+        self.file_types = file_types
 
     def search_files(self) -> dict:
         """Operates the Search Functionality on the Defined Directory"""
-        dir_file_info = self._SearchFiles__get_files()
-        result = self._SearchFiles__get_file_stats(dir_file_info)
+        dir_file_info = self.__get_files()
+        result = self.__get_file_stats(dir_file_info)
         return result
 
     def __get_files(self) -> dict:
@@ -31,9 +36,9 @@ class SearchFiles:
 
         return dir_info
 
-    @staticmethod
-    def __get_file_stats(dir_file_info: dict) -> dict:
-        """Stats for all the scanned files are created using a dictionary
+    def __get_file_stats(self, dir_file_info: dict) -> dict:
+        """Stats for the given file type extension is only checked.
+        Stats for all the files are created using a dictionary
         Sample_Dict_Format = {
             file_name : {file_path: path, file_size: size, file_cTime: created_time, file_mTime: mod_time},
             file_name1 : {file_path: path, file_size: size, file_cTime: created_time, file_mTime: mod_time},
@@ -44,17 +49,22 @@ class SearchFiles:
         file_stats = dict()
         for file_path, file_names in dir_file_info.items():
             for name in file_names:
-                stats = os.stat(file_path + '\\' + name)
-                file_stats[name] = {
-                'file_path':file_path,
-                 'file_size':stats.st_size, 
-                 'file_cTime':stats.st_ctime, 
-                 'file_mTime':stats.st_mtime
-                }
+                for extension in self.file_types:
+                    if name.lower().endswith(extension):
+                        file = os.path.join(file_path, name)
+                        stats = os.stat(file)
+                        file_stats[name] = {
+                             'file_path': file_path,
+                             'file_size': stats.st_size,
+                             'file_cTime': stats.st_ctime,
+                             'file_mTime': stats.st_mtime
+                        }
+                    else:
+                        pass
 
         return file_stats
 
     def __str__(self):
-        info = f"Class Description: Code to scans all the files/folders/sub-folders on the given directory " \
-            f"{self.folder_path}"
+        info = f"Class Description: Code to scans files/folders/sub-folders for given file types {self.file_types}" \
+               f" on the given directory {self.folder_path}"
         return info

@@ -8,7 +8,7 @@ class IdentifyFiles:
         self.files = files
         self.current_date = dt.date.today()
         self.backup_scope = backup_scope
-        self.scoped_date = self.current_date - dt.timedelta(days=(self.backup_scope))
+        self.scoped_date = self.current_date - dt.timedelta(days=self.backup_scope)
 
     @staticmethod
     def __convert_time(c_time: float):
@@ -24,7 +24,7 @@ class IdentifyFiles:
         }
         """
         for name, stats in self.files.items():
-            file_date = self._IdentifyFiles__convert_time(stats['file_mTime'])
+            file_date = self.__convert_time(stats['file_mTime'])
             if file_date > self.scoped_date:
                 stats['Eligible'] = True
             else:
@@ -34,7 +34,7 @@ class IdentifyFiles:
 
     def identify_files(self) -> dict:
         """Operates the Identify Functionality on the Scanned Files"""
-        result = self._IdentifyFiles__eligible_check()
+        result = self.__eligible_check()
         print(f"{len(result)} files have been scanned")
         identified_files = {k: v for k, v in result.items() if v['Eligible']}
         print(f"{len(identified_files)} files are eligible for backup")
