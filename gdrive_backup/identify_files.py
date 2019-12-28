@@ -1,5 +1,4 @@
 import datetime as dt
-BACKUP_SCOPE = 5
 
 
 class IdentifyFiles:
