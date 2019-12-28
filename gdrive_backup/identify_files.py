@@ -32,13 +32,13 @@ class IdentifyFiles:
 
         return self.files
 
-    def identify_files(self) -> dict:
+    def identify_files(self) -> tuple:
         """Operates the Identify Functionality on the Scanned Files"""
         result = self.__eligible_check()
         print(f"{len(result)} files have been scanned")
         identified_files = {k: v for k, v in result.items() if v['Eligible']}
         print(f"{len(identified_files)} files are eligible for backup")
-        return identified_files
+        return identified_files, len(identified_files)
 
     def __str__(self):
         info = f"Class Description: Code to check & return the files which are eligible for Backup" \
