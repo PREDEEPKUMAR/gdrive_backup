@@ -1,20 +1,15 @@
 import os
 import shutil
 from zipfile import ZipFile
-import time
 import send2trash as safe_delete
-
-LAP_DESTINATION = r'E:\BB\GDrive_Backup\BackUp_Folder\ToDO'
-PC_DESTINATION = r'D:\Predi_BackUp\ToDo'
-LAP_Zip_FILE = rf'E:\BB\GDrive_Backup\BackUp_Folder\ToDO\lap_backup_{int(time.time())}.zip'
-PC_Zip_FILE = rf'D:\Predi_BackUp\ToDo\pc_backup_{int(time.time())}.zip'
 
 
 class FileOperation:
 
-    def __init__(self, files: dict, destination: str, zip_file: str, user_id: str):
+    def __init__(self, files: dict, destination: str, g_drive: str, zip_file: str, user_id: str):
         self.destination = destination
         self.files = files
+        self.g_drive = g_drive
         self.zip_file = zip_file
         self.user_id = user_id
         self.file_names = list()
@@ -75,8 +70,7 @@ class FileOperation:
         """Move all the Files from Backup_ToDO to Backup_Done Directory"""
         source_loc = self.destination
         zipped_files = os.listdir(source_loc)
-        # ToDO - HardCode has to be removed
-        destiny = os.path.join(source_loc[:-5], 'Done')
+        destiny = self.g_drive
         for name in zipped_files:
             self.__run_log__(os.path.join(source_loc, name), destiny)
             shutil.move(os.path.join(source_loc, name), destiny)
