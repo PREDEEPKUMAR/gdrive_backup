@@ -1,10 +1,4 @@
 import os
-LAP_BACKUP_FOLDER = r'D:\\Backup'
-PC_BACKUP_FOLDER = r'C:\Users\Kumar\Downloads'
-FILE_TYPES = [
-    'xls', 'xlsx', 'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'ppt', 'pptx', 'zip', 'gz', 'rar',
-    'xlsm ', 'xltx', 'xltm', 'xlt'
-]
 
 
 class SearchFiles:
