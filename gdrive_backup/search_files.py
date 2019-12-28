@@ -2,7 +2,8 @@ import os
 LAP_BACKUP_FOLDER = r'D:\\Backup'
 PC_BACKUP_FOLDER = r'C:\Users\Kumar\Downloads'
 FILE_TYPES = [
-    'xls', 'xlsx', 'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'ppt', 'pptx', 'zip', 'gz', 'rar'
+    'xls', 'xlsx', 'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'ppt', 'pptx', 'zip', 'gz', 'rar',
+    'xlsm ', 'xltx', 'xltm', 'xlt'
 ]
 
 
@@ -28,6 +29,7 @@ class SearchFiles:
         }
         """
         dir_info = dict()
+        self.__run_log__()
         for dir_path, directory, filename in os.walk(self.folder_path):
             if dir_path in dir_info.keys():
                 dir_info.update(filename)
@@ -68,3 +70,8 @@ class SearchFiles:
         info = f"Class Description: Code to scans files/folders/sub-folders for given file types {self.file_types}" \
                f" on the given directory {self.folder_path}"
         return info
+
+    def __run_log__(self):
+        info = f'_______________________________________________________\n' \
+               f'Scanning for Files {self.file_types} on the folder {self.folder_path}'
+        print(info)
