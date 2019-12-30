@@ -2,6 +2,51 @@ import os
 import shutil
 from zipfile import ZipFile
 import send2trash as safe_delete
+from functools import update_wrapper, partial
+
+
+class Security(object):
+    class Check(object):
+        """Decorator Method to Check for Security"""
+        def __init__(self, decorated_func):
+            """Basic Decorator Options"""
+            update_wrapper(self, decorated_func)
+            self.decorated_func = decorated_func
+
+        def __get__(self, obj, obj_type):
+            return partial(self.__call__, obj)
+
+        def __call__(self, obj, *args, **kwargs):
+            """Wrapping the Function to Check for Security and if the Security is Passed, Allowing
+            the actual decorator function to execute"""
+            if self.__check_security(*args, **kwargs):
+                return self.decorated_func(obj, *args, **kwargs)
+            else:
+                return 'User Denied'
+
+        @staticmethod
+        def __check_security(user_id, operation):
+            """Basic Security Checks By the Given User ID and Operation Type"""
+            # ToDO --> The User Checks can be called from an API
+            admin_users = {
+                'ADMIN': True,
+                'TEST': True
+            }
+            normal_users = {
+                'ADMIN': True,
+                'TEST': True,
+                'USER': True
+            }
+            if operation == 'D':
+                return admin_users.get(user_id, False)
+            elif operation in ['C', 'M', 'Z']:
+                return normal_users.get(user_id, False)
+            else:
+                return False
+
+        def __str__(self):
+            info = 'Class Description: Makes the Security Check with the Given User ID and Operation Type'
+            return info
 
 
 class FileOperation:
@@ -14,46 +59,35 @@ class FileOperation:
         self.user_id = user_id
         self.file_names = list()
 
-    def operate_copy_files(self):
-        if self.__check_security(self.user_id, 'M'):
-            self.__copy_files()
-        else:
-            return 'User Denied!'
+    @Security.Check
+    def operate_copy_files(self, *args):
+        """Captures the Eligible File Names"""
+        self.file_names = list(map(self.__copy_files, self.files.items()))
 
-    def operate_zip_files(self):
-        if self.__check_security(self.user_id, 'Z'):
-            self.__zip_files()
-        else:
-            return 'User Denied!'
+    @Security.Check
+    def operate_zip_files(self, *args):
+        """Zips the File Name"""
+        self.__zip_files()
 
-    def operate_delete_files(self):
-        if self.__check_security(self.user_id, 'D'):
-            self.__delete_files()
-        else:
-            return 'User Denied!'
+    @Security.Check
+    def operate_delete_files(self, *args):
+        """Delete's the Files"""
+        list(map(self.__delete_files, self.file_names))
 
-    def operate_move_files(self):
-        self.__move_files()
+    @Security.Check
+    def operate_move_files(self, *args):
+        """Move the Zip file from one location to another location"""
+        source_loc = self.destination
+        zipped_files = os.listdir(source_loc)
+        list(map(self.__move_files, zipped_files))
 
-    @staticmethod
-    def __check_security(user_id, operation):
-        """Basic Security Checks"""
-        if operation == 'D' and user_id == 'ADMIN':
-            return True
-        elif (operation in ['M', 'Z']) and (user_id in ['USER', 'ADMIN']):
-            return True
-        elif user_id == 'TEST':
-            return True
-        else:
-            return False
-
-    def __copy_files(self):
-        """Copy the Eligible Files from Source to Backup_ToDO or Backup_Done Directory.
-        Also it captures the eligible file names"""
-        for name, stats in self.files.items():
-            self.file_names.append(name)
-            source_loc = os.path.join(stats['file_path'], name)
-            shutil.copy(source_loc, self.destination)
+    def __copy_files(self, unpacked_args: dict) -> str:
+        """Copy the Eligible Files from Source to Backup_ToDO or Backup_Done Directory."""
+        name = unpacked_args[0]
+        stats = unpacked_args[1]
+        source_loc = os.path.join(stats.get('file_path'), name)
+        shutil.copy(source_loc, self.destination)
+        return name
 
     def __zip_files(self):
         """Zip all the files available in the Backup_ToDO Directory"""
@@ -61,25 +95,22 @@ class FileOperation:
             for file in self.file_names:
                 Zip.write(os.path.join(self.destination, file))
 
-    def __delete_files(self):
+    def __delete_files(self, file):
         """Delete all the files except the Zip File in the Backup_ToDO Directory"""
-        for file in self.file_names:
-            safe_delete.send2trash(os.path.join(self.destination, file))
+        safe_delete.send2trash(os.path.join(self.destination, file))
 
-    def __move_files(self):
+    def __move_files(self, name):
         """Move all the Files from Backup_ToDO to Backup_Done Directory"""
         source_loc = self.destination
-        zipped_files = os.listdir(source_loc)
         destiny = self.g_drive
-        for name in zipped_files:
-            self.__run_log__(os.path.join(source_loc, name), destiny)
-            shutil.move(os.path.join(source_loc, name), destiny)
-
-    def __str__(self):
-        info = 'Class Description: File Operation class for Move, Copy, Zipping and Deleting Files'
-        return info
+        self.__run_log__(os.path.join(source_loc, name), destiny)
+        shutil.move(os.path.join(source_loc, name), destiny)
 
     @staticmethod
     def __run_log__(source, destiny):
         info = f'Backing up the file {source} to {destiny}'
         print(info)
+
+    def __str__(self):
+        info = 'Class Description: File Operation class for Move, Copy, Zipping and Deleting Files'
+        return info
