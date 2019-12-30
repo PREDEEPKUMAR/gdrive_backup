@@ -23,7 +23,7 @@ class IdentifyFiles:
         }
         """
         for name, stats in self.files.items():
-            file_date = self.__convert_time(stats['file_mTime'])
+            file_date = self.__convert_time(stats.get('file_mTime'))
             if file_date > self.scoped_date:
                 stats['Eligible'] = True
             else:
@@ -35,7 +35,7 @@ class IdentifyFiles:
         """Operates the Identify Functionality on the Scanned Files"""
         result = self.__eligible_check()
         print(f"{len(result)} files have been scanned")
-        identified_files = {k: v for k, v in result.items() if v['Eligible']}
+        identified_files = {k: v for k, v in result.items() if v.get('Eligible')}
         print(f"{len(identified_files)} files are eligible for backup")
         return identified_files, len(identified_files)
 
