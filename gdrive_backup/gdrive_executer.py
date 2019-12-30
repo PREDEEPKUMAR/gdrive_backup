@@ -52,24 +52,24 @@ class BackUpExec:
             if eligible_count:
                 zip_file = self.__folder_selection(folder)  # Step 3
                 opr_exe = helper.FileOperation(idf_files, TODO_DIR, G_DRIVE_DIR, zip_file, self.user_type)
-                opr_exe.operate_copy_files()  # Step 4
-                opr_exe.operate_zip_files()  # Step 5
-                opr_exe.operate_delete_files()  # Step 6
-                opr_exe.operate_move_files()  # Step 7
+                opr_exe.operate_copy_files(self.user_type, 'C')  # Step 4
+                opr_exe.operate_zip_files(self.user_type, 'Z')  # Step 5
+                opr_exe.operate_delete_files(self.user_type, 'D')  # Step 6
+                opr_exe.operate_move_files(self.user_type, 'M')  # Step 7
 
 
 if __name__ == '__main__':
 
     BACKUP_FOLDER = ['Desktop', 'Downloads', 'Documents', 'Pictures']
-    HOME_DIR = os.path.join(os.environ['HOMEDRIVE'], (os.environ['HOMEPATH']))
-    TODO_DIR = os.environ['GDrive_TODO']
-    G_DRIVE_DIR = os.environ['GDrive']
+    HOME_DIR = os.path.join(os.environ.get('HOMEDRIVE'), (os.environ.get('HOMEPATH')))
+    TODO_DIR = os.environ.get('GDrive_TODO')
+    G_DRIVE_DIR = os.environ.get('GDrive')
     FILE_TYPES = [
         'xls', 'xlsx', 'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'ppt', 'pptx', 'zip', 'gz', 'rar',
         'xlsm ', 'xltx', 'xltm', 'xlt'
     ]
 
-    if G_DRIVE_DIR:
+    if G_DRIVE_DIR and TODO_DIR:
         execute = BackUpExec(user_type='ADMIN', exec_mode='PC', backup_scope=5)
         execute.operate_execution()
     else:
