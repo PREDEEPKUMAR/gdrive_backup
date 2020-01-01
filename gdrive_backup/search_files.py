@@ -21,14 +21,14 @@ class SearchFiles:
             dir_path2 : {file1, file2, file3,...},
             .............
         }
+        Unpacking the path using os.walk Command -- Generator which gives out
+        item 0 - Dir Path, item 1 - Directory, item 2 - FileName
         """
         dir_info = dict()
         self.__run_log__()
-        for dir_path, directory, filename in os.walk(self.folder_path):
-            if dir_path in dir_info.keys():
-                dir_info.update(filename)
-            else:
-                dir_info[dir_path] = filename
+        gen_folder = list(os.walk(self.folder_path))
+        list(filter(lambda i: dir_info.update(i[2]) if i[0] in dir_info else dir_info.setdefault(i[0], i[2]),
+                    gen_folder))
 
         return dir_info
 
@@ -42,6 +42,7 @@ class SearchFiles:
         }
         The Stats includes File Path, File Size, File Created Time, File Modified Time
         """
+        # ToDO -- Check for the best approach to replace the nested for Loop
         file_stats = dict()
         for file_path, file_names in dir_file_info.items():
             for name in file_names:
