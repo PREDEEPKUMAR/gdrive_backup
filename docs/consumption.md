@@ -1,3 +1,3 @@
 **Project Details**
     
-    Gdrive Primary Login: predibackup1@gmail.com
+    Gdrive Primary Login: <username>@gmail.com
