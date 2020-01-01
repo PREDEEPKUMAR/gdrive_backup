@@ -5,8 +5,8 @@ import send2trash as safe_delete
 from functools import update_wrapper, partial
 
 
-class Security(object):
-    class Check(object):
+class Security:
+    class Check:
         """Decorator Method to Check for Security"""
         def __init__(self, decorated_func):
             """Basic Decorator Options"""
@@ -77,9 +77,7 @@ class FileOperation:
     @Security.Check
     def operate_move_files(self, *args):
         """Move the Zip file from one location to another location"""
-        source_loc = self.destination
-        zipped_files = os.listdir(source_loc)
-        list(map(self.__move_files, zipped_files))
+        self.__move_files(self.zip_file)
 
     def __copy_files(self, unpacked_args: dict) -> str:
         """Copy the Eligible Files from Source to Backup_ToDO or Backup_Done Directory."""
