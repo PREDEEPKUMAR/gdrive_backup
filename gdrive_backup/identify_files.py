@@ -25,9 +25,9 @@ class IdentifyFiles:
         for name, stats in self.files.items():
             file_date = self.__convert_time(stats.get('file_mTime'))
             if file_date > self.scoped_date:
-                stats['Eligible'] = True
+                stats.setdefault('Eligible', True)
             else:
-                stats['Eligible'] = False
+                stats.setdefault('Eligible', False)
 
         return self.files
 
