@@ -1,0 +1,12 @@
+{
+  "admin_users" : {
+    "ADMIN": true,
+    "TEST": true
+  },
+
+  "normal_users" : {
+    "ADMIN": true,
+    "TEST": true,
+    "USER": true
+  }
+}
