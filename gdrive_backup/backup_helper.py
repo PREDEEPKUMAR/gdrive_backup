@@ -1,8 +1,11 @@
 import os
 import shutil
+import json
 from zipfile import ZipFile
 import send2trash as safe_delete
 from functools import update_wrapper, partial
+
+CONFIG_FILE = '../config/users.json'
 
 
 class Security:
@@ -12,6 +15,8 @@ class Security:
             """Basic Decorator Options"""
             update_wrapper(self, decorated_func)
             self.decorated_func = decorated_func
+            with open(CONFIG_FILE) as config_file:
+                self.secured_data = json.load(config_file)
 
         def __get__(self, obj, obj_type):
             return partial(self.__call__, obj)
@@ -24,19 +29,13 @@ class Security:
             else:
                 return 'User Denied'
 
-        @staticmethod
-        def __check_security(user_id, operation):
-            """Basic Security Checks By the Given User ID and Operation Type"""
-            # ToDO --> The User Checks can be called from an API
-            admin_users = {
-                'ADMIN': True,
-                'TEST': True
-            }
-            normal_users = {
-                'ADMIN': True,
-                'TEST': True,
-                'USER': True
-            }
+        def __check_security(self, user_id, operation):
+            """Basic Security Checks By the Given User ID and Operation Type
+            Users Security Check is being called from the Config Json File
+            No API Implementation as it would take network coverage"""
+
+            admin_users = self.secured_data.get('admin_users')
+            normal_users = self.secured_data.get('normal_users')
             if operation == 'D':
                 return admin_users.get(user_id, False)
             elif operation in ['C', 'M', 'Z']:
