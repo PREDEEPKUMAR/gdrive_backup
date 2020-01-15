@@ -3,7 +3,7 @@ import os
 
 class SearchFiles:
 
-    def __init__(self, folder_path: str, file_types: list):
+    def __init__(self, folder_path: str = '', file_types: list = []):
         """Search Folder Path is initiated here"""
         self.folder_path = folder_path
         self.file_types = file_types
