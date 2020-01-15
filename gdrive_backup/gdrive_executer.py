@@ -70,7 +70,7 @@ if __name__ == '__main__':
     ]
 
     if G_DRIVE_DIR and TODO_DIR:
-        execute = BackUpExec(user_type='ADMIN', exec_mode='PC', backup_scope=5)
+        execute = BackUpExec(user_type='ADMIN', exec_mode='PC', backup_scope=7)
         execute.operate_execution()
     else:
         print('Setup the G-Drive in the Environment First')
