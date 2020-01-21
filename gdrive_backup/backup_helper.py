@@ -12,7 +12,7 @@ class FileOperation:
         self.g_drive = g_drive
         self.zip_file = zip_file
         self.user_id = user_id
-        self.file_names = list()
+        # self.file_names = list()
 
     def operate_copy_files(self):
         if self.__check_security(self.user_id, 'M'):
