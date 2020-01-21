@@ -13,6 +13,7 @@ class FileOperation:
         self.zip_file = zip_file
         self.user_id = user_id
         # self.file_names = list()
+        # additon of few other lines
 
     def operate_copy_files(self):
         if self.__check_security(self.user_id, 'M'):
