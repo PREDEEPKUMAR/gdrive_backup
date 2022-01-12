@@ -1,7 +1,7 @@
 certifi==2019.11.28
 chardet==3.0.4
 idna==2.8
-pipenv==2018.11.26
+pipenv==2022.1.8
 requests==2.22.0
 Send2Trash==1.5.0
 urllib3==1.25.7
